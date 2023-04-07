@@ -67,6 +67,21 @@ const editAnswer = (index) => {
       });
   };
 
+const handleDelete = (answerId) => {
+  // Send a DELETE request to the backend with the ID of the entry to be deleted
+  axios
+    .delete(`http://localhost:3080/gpt/${answerId}`)
+    .then((response) => {
+      // Handle successful deletion
+      // For example, you can update the state to remove the deleted entry from the UI
+      setGptArray(gptArray.filter((gpt) => gpt._id !== answerId));
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error(error);
+    });
+};
+
   // THE getData() Function
   // Retrieves all the data in the DB
   // Fills our Array with Data Objects
@@ -120,6 +135,10 @@ const editAnswer = (index) => {
                       <button onClick={() => editAnswer(i)}>Edit</button>
                     </>
                   )}
+                </section>
+                <section>
+                  <p key={i}>{gpt.answer}</p>
+                  <button onClick={() => handleDelete(gpt._id)}>Delete</button>
                 </section>
 
                 <hr />
