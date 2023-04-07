@@ -15,22 +15,34 @@ const App = () => {
   const [editedAnswer, setEditedAnswer] = useState({});
 
   // EDIT ANSWER HANDLERS
+const editAnswer = (index) => {
+  setIsEditing({ ...isEditing, [index]: true });
+};
 
-  const editAnswer = (index) => {
-    setIsEditing({ ...isEditing, [index]: true });
-  };
 
   const saveEditedAnswer = (index) => {
-    // Update the answer in gptArray (and optionally update the backend server)
-    const updatedGptArray = gptArray.map((gpt, i) => {
-      if (i === index) {
-        return { ...gpt, answer: editedAnswer[index] };
-      }
-      return gpt;
-    });
-    setGptArray(updatedGptArray);
-    setIsEditing({ ...isEditing, [index]: false });
+    // Extract the ID and new content of the answer to update
+    const answerId = gptArray[index]._id; // Assuming each answer has a unique _id property
+    const newContent = editedAnswer[index];
+
+    // Send an HTTP request to the backend API endpoint to update the answer
+    axios
+      .put(`http://localhost:3080/gpt/${answerId}`, { answer: newContent })
+      .then((response) => {
+        // Update the gptArray with the updated answer received from the backend
+        const updatedGptArray = gptArray.map((gpt) =>
+          gpt._id === answerId ? response.data : gpt
+        );
+        setGptArray(updatedGptArray);
+        setIsEditing({ ...isEditing, [index]: false });
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the request
+        console.error(error);
+      });
   };
+
+  
 
   // HANDLERS
 
