@@ -1,24 +1,22 @@
-import './App.css'
-import './normal.css'
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-
-
+import "./App.css";
+import "./normal.css";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import ReactMarkdown from "react-markdown";
 
 const App = () => {
   // STATE
   const [newQuestion, setNewQuestion] = useState("");
   const [gptArray, setGptArray] = useState([]);
 
-  // EDITING ANSWERS STATE 
+  // EDITING ANSWERS STATE
   const [isEditing, setIsEditing] = useState({});
   const [editedAnswer, setEditedAnswer] = useState({});
 
   // EDIT ANSWER HANDLERS
-const editAnswer = (index) => {
-  setIsEditing({ ...isEditing, [index]: true });
-};
-
+  const editAnswer = (index) => {
+    setIsEditing({ ...isEditing, [index]: true });
+  };
 
   const saveEditedAnswer = (index) => {
     // Extract the ID and new content of the answer to update
@@ -41,8 +39,6 @@ const editAnswer = (index) => {
         console.error(error);
       });
   };
-
-  
 
   // HANDLERS
 
@@ -67,20 +63,20 @@ const editAnswer = (index) => {
       });
   };
 
-const handleDelete = (answerId) => {
-  // Send a DELETE request to the backend with the ID of the entry to be deleted
-  axios
-    .delete(`http://localhost:3080/gpt/${answerId}`)
-    .then((response) => {
-      // Handle successful deletion
-      // For example, you can update the state to remove the deleted entry from the UI
-      setGptArray(gptArray.filter((gpt) => gpt._id !== answerId));
-    })
-    .catch((error) => {
-      // Handle errors
-      console.error(error);
-    });
-};
+  const handleDelete = (answerId) => {
+    // Send a DELETE request to the backend with the ID of the entry to be deleted
+    axios
+      .delete(`http://localhost:3080/gpt/${answerId}`)
+      .then((response) => {
+        // Handle successful deletion
+        // For example, you can update the state to remove the deleted entry from the UI
+        setGptArray(gptArray.filter((gpt) => gpt._id !== answerId));
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error(error);
+      });
+  };
 
   // THE getData() Function
   // Retrieves all the data in the DB
@@ -131,16 +127,14 @@ const handleDelete = (answerId) => {
                     </>
                   ) : (
                     <>
-                      <p key={i}>{gpt.answer}</p>
+                      <ReactMarkdown key={i}>{gpt.answer}</ReactMarkdown>
                       <button onClick={() => editAnswer(i)}>Edit</button>
                     </>
                   )}
                 </section>
                 <section>
-                  <p key={i}>{gpt.answer}</p>
                   <button onClick={() => handleDelete(gpt._id)}>Delete</button>
                 </section>
-
                 <hr />
               </>
             );
@@ -149,6 +143,12 @@ const handleDelete = (answerId) => {
       </aside>
       {/* BODY */}
       <section className="chatbox">
+         {/* Render the first answer in the chatbox area */}
+        {gptArray.length > 0 && (
+          <div className="chat-output-holder">
+            <ReactMarkdown>{gptArray[gptArray.length - 1].answer}</ReactMarkdown>
+          </div>
+        )}
         <div className="chat-input-holder">
           {/* Our Question Input Field --- All to be asked will go here..... */}
           <form onSubmit={handleSubmit}>
@@ -162,7 +162,6 @@ const handleDelete = (answerId) => {
       </section>
     </div>
   );
-}
+};
 
-export default App
-
+export default App;
