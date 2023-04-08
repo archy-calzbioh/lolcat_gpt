@@ -65,10 +65,11 @@ const App = () => {
   // HANDLERS
 
   //handleChange
-  const handleChange = (e) => {
-    setNewQuestion(e.target.value);
-    console.log(newQuestion);
-  };
+const handleChange = (e) => {
+  setNewQuestion(e.target.value);
+  console.log(newQuestion);
+};
+
 
   // handleSubmit
   const handleSubmit = (e) => {
@@ -168,26 +169,28 @@ const App = () => {
         {/* Render the first answer in the chatbox area */}
         {gptArray.length > 0 && (
           <div className="chat-output-holder">
-           
-              {gptArray[gptArray.length - 1].answer && (
-                <MyCoolCodeBlock
-                  code={gptArray[gptArray.length - 1].answer}
-                  language="javascript"
-                  showLineNumbers={true}
-                  startingLineNumber={1}
-                />
-              )}
-        
+            {gptArray[gptArray.length - 1].answer && (
+              <MyCoolCodeBlock
+                code={gptArray[gptArray.length - 1].answer}
+                language="javascript"
+                showLineNumbers={true}
+                startingLineNumber={1}
+              />
+            )}
           </div>
         )}
         <div className="chat-input-holder">
           {/* Our Question Input Field --- All to be asked will go here..... */}
           <form onSubmit={handleSubmit}>
-            <input
+            <textarea
               onChange={handleChange}
-              rows="1"
+              value={newQuestion}
+              rows="3"
               className="chat-input-textarea"
-            ></input>
+            ></textarea>
+            <button type="submit" className="submit-button">
+              Submit
+            </button>
           </form>
         </div>
       </section>
