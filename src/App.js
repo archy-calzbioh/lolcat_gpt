@@ -14,14 +14,16 @@ function MyCoolCodeBlock({
   startingLineNumber,
 }) {
   return (
-    <CopyBlock
-      text={code}
-      language={language}
-      showLineNumbers={showLineNumbers}
-      startingLineNumber={startingLineNumber}
-      theme={dracula}
-      codeBlock
-    />
+    <div className="code-block">
+      <CopyBlock
+        text={code}
+        language={language}
+        showLineNumbers={showLineNumbers}
+        startingLineNumber={startingLineNumber}
+        theme={dracula}
+        codeBlock
+      />
+    </div>
   );
 }
 
