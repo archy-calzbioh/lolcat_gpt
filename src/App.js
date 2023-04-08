@@ -3,6 +3,28 @@ import "./normal.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import { CopyBlock, dracula } from "react-code-blocks";
+
+
+
+function MyCoolCodeBlock({
+  code,
+  language,
+  showLineNumbers,
+  startingLineNumber,
+}) {
+  return (
+    <CopyBlock
+      text={code}
+      language={language}
+      showLineNumbers={showLineNumbers}
+      startingLineNumber={startingLineNumber}
+      theme={dracula}
+      codeBlock
+    />
+  );
+}
+
 
 const App = () => {
   // STATE
@@ -143,10 +165,19 @@ const App = () => {
       </aside>
       {/* BODY */}
       <section className="chatbox">
-         {/* Render the first answer in the chatbox area */}
+        {/* Render the first answer in the chatbox area */}
         {gptArray.length > 0 && (
           <div className="chat-output-holder">
-            <ReactMarkdown>{gptArray[gptArray.length - 1].answer}</ReactMarkdown>
+           
+              {gptArray[gptArray.length - 1].answer && (
+                <MyCoolCodeBlock
+                  code={gptArray[gptArray.length - 1].answer}
+                  language="javascript"
+                  showLineNumbers={true}
+                  startingLineNumber={1}
+                />
+              )}
+        
           </div>
         )}
         <div className="chat-input-holder">
