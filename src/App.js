@@ -1,5 +1,4 @@
 import "./App.css";
-import "./normal.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
@@ -34,22 +33,29 @@ const App = () => {
   // Create a new state to store the generated image URL
   const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
 
-const generateImage = () => {
-  axios
-    .post("http://localhost:3080/generate-image", {})
-    .then((response) => {
-      console.log(response.data); // check response data
-      const imageUrl = response.data.data[0].url;
-      console.log(imageUrl); // check imageUrl
+  //select an element in the sidebar
+  const [selectedElementId, setSelectedElementId] = useState(null);
 
-      setGeneratedImageUrl(imageUrl);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-};
+  // Handler function for when an element in the sidebar is clicked
+  const handleElementClick = (elementId) => {
+    setSelectedElementId(elementId);
+  };
 
 
+  const generateImage = () => {
+    axios
+      .post("http://localhost:3080/generate-image", {})
+      .then((response) => {
+        console.log(response.data); // check response data
+        const imageUrl = response.data.data[0].url;
+        console.log(imageUrl); // check imageUrl
+
+        setGeneratedImageUrl(imageUrl);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   // STATE
   const [newQuestion, setNewQuestion] = useState("");
@@ -94,26 +100,25 @@ const generateImage = () => {
     console.log(newQuestion);
   };
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  axios
-    .post("http://localhost:3080/gpt", {
-      question: newQuestion,
-      imageUrl: generatedImageUrl, // Add the generated image URL to the request body
-    })
-    .then((response) => {
-      // Update the gptArray with the new entry received from the backend
-      setGptArray([...gptArray, response.data]);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:3080/gpt", {
+        question: newQuestion,
+        imageUrl: generatedImageUrl, // Add the generated image URL to the request body
+      })
+      .then((response) => {
+        // Update the gptArray with the new entry received from the backend
+        setGptArray([...gptArray, response.data]);
 
-      // Clear the new question and generated image URL
-      setNewQuestion("");
-      setGeneratedImageUrl(null);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-};
-
+        // Clear the new question and generated image URL
+        setNewQuestion("");
+        setGeneratedImageUrl(null);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const handleDelete = (answerId) => {
     // Send a DELETE request to the backend with the ID of the entry to be deleted
@@ -143,15 +148,26 @@ const handleSubmit = (e) => {
   // USE EFFECT
   // Have GPT Array in the Dependency Array so when it is updated, callAPI() is called and page refreshes!!
 
-    useEffect(() => {
-      getData();
-    }, [gptArray]);
+  useEffect(() => {
+    getData();
+  }, [gptArray]);
 
   return (
     <div className="App">
       {/* SIDEBAR - Questions and Answers */}
+      <div className="sidebar-container">
+  
       <aside className="sidemenu">
         <h1 className="title">Q&A</h1>
+        <hr />
+        <section>
+          {/* Render the elements in the sidebar */}
+          {gptArray.map((gpt) => (
+            <div key={gpt._id} onClick={() => handleElementClick(gpt._id)}>
+              <p className="question">{gpt.question}</p>
+            </div>
+          ))}
+        </section>
         <hr />
         <section>
           {/* Mapping through Array to display Questions and Answers  */}
@@ -204,53 +220,56 @@ const handleSubmit = (e) => {
           })}
         </section>
       </aside>
+        </div>
       {/* BODY */}
       <section className="chatbox">
-        {/* Render the first answer in the chatbox area */}
-        {gptArray.length > 0 && (
-          <div className="chat-output-holder">
-            {gptArray[gptArray.length - 1].answer && (
-              <MyCoolCodeBlock
-                code={gptArray[gptArray.length - 1].answer}
-                language="javascript"
-                showLineNumbers={true}
-                startingLineNumber={1}
-              />
-            )}
-            {generatedImageUrl && (
-              <img
-                src={generatedImageUrl}
-                alt="Generated Image"
-                style={{
-                  width: "300px",
-                  height: "300px",
-                  marginTop: "20px",
-                  marginBottom: "20px",
-                }}
-              />
-            )}
+        <div className="chatbox-container">
+          {/* Render the first answer in the chatbox area */}
+          {gptArray.length > 0 && (
+            <div className="chat-output-holder">
+              {gptArray[gptArray.length - 1].answer && (
+                <MyCoolCodeBlock
+                  code={gptArray[gptArray.length - 1].answer}
+                  language="javascript"
+                  showLineNumbers={true}
+                  startingLineNumber={1}
+                />
+              )}
+              {generatedImageUrl && (
+                <img
+                  src={generatedImageUrl}
+                  alt="Generated Image"
+                  style={{
+                    width: "300px",
+                    height: "300px",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                  }}
+                />
+              )}
+            </div>
+          )}
+          <div className="chat-input-holder">
+            {/* Our Question Input Field --- All to be asked will go here..... */}
+            <form onSubmit={handleSubmit}>
+              <textarea
+                onChange={handleChange}
+                value={newQuestion}
+                rows="3"
+                className="chat-input-textarea"
+              ></textarea>
+              <button type="submit" className="submit-button">
+                Submit
+              </button>
+              <button
+                type="button"
+                onClick={generateImage}
+                className="generate-image-button"
+              >
+                Generate Image
+              </button>
+            </form>
           </div>
-        )}
-        <div className="chat-input-holder">
-          {/* Our Question Input Field --- All to be asked will go here..... */}
-          <form onSubmit={handleSubmit}>
-            <textarea
-              onChange={handleChange}
-              value={newQuestion}
-              rows="3"
-              className="chat-input-textarea"
-            ></textarea>
-            <button type="submit" className="submit-button">
-              Submit
-            </button>
-            <button
-              type="button"
-              onClick={generateImage}
-              className="generate-image-button"
-            >
-              Generate Image
-            </button>
-          </form>
         </div>
       </section>
     </div>
