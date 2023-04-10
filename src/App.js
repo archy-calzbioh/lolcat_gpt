@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ReactMarkdown from "react-markdown";
+
 import { CopyBlock, dracula } from "react-code-blocks";
 
 
@@ -105,11 +105,14 @@ const App = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/generate-image`,
-        {}
+  e.preventDefault();
+  try {
+    // Remove the extra forward slash at the end of the base URL
+    const baseUrl = process.env.REACT_APP_API_URL.replace(/\/$/, '');
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/generate-image`,
+      {}
+
       );
       const imageUrl = response.data.data[0].url;
       setGeneratedImageUrl(imageUrl);
