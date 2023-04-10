@@ -44,21 +44,6 @@ const App = () => {
     setSelectedElementId(elementId);
   };
 
-  const generateImage = () => {
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/generate-image`, {})
-      .then((response) => {
-        console.log(response.data); // check response data
-        const imageUrl = response.data.data[0].url;
-        console.log(imageUrl); // check imageUrl
-
-        setGeneratedImageUrl(imageUrl);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   // STATE
   const [newQuestion, setNewQuestion] = useState("");
   const [gptArray, setGptArray] = useState([]);
@@ -140,7 +125,7 @@ const App = () => {
   const handleDelete = (answerId) => {
     // Send a DELETE request to the backend with the ID of the entry to be deleted
     axios
-      .delete(`http://localhost:3080/gpt/${answerId}`)
+      .delete(`${process.env.REACT_APP_API_URL}/gpt/${answerId}`)
       .then((response) => {
         // Handle successful deletion
         // For example, you can update the state to remove the deleted entry from the UI
@@ -157,7 +142,7 @@ const App = () => {
   // Fills our Array with Data Objects
 
   const getData = () => {
-    axios.get("http://localhost:3080/gpt").then((response) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/gpt`).then((response) => {
       setGptArray(response.data);
     });
   };
