@@ -128,9 +128,15 @@ hr {
 
 .code-block {
   width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
 }
+
 
 
 form {
   width: 100%;
 }
+
+

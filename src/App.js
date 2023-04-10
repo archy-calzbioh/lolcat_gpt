@@ -154,6 +154,7 @@ const App = () => {
 
   return (
     <div className="App">
+        
       {/* SIDEBAR - Questions and Answers */}
       <div className="sidebar-container">
   
@@ -223,17 +224,19 @@ const App = () => {
         </div>
       {/* BODY */}
       <section className="chatbox">
-        <div className="chatbox-container">
-          {/* Render the first answer in the chatbox area */}
-          {gptArray.length > 0 && (
-            <div className="chat-output-holder">
-              {gptArray[gptArray.length - 1].answer && (
-                <MyCoolCodeBlock
-                  code={gptArray[gptArray.length - 1].answer}
-                  language="javascript"
-                  showLineNumbers={true}
-                  startingLineNumber={1}
-                />
+    <div className="chatbox-container">
+      {/* Render the first answer in the chatbox area */}
+      {gptArray.length > 0 && (
+        <div className="chat-output-holder">
+          {gptArray[gptArray.length - 1].answer && (
+            <div className="code-block"> {/* Add this wrapper */}
+              <MyCoolCodeBlock
+                code={gptArray[gptArray.length - 1].answer}
+                language="javascript"
+                showLineNumbers={true}
+                startingLineNumber={1}
+              />
+            </div>
               )}
               {generatedImageUrl && (
                 <img
