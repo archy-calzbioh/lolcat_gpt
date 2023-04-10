@@ -166,6 +166,12 @@ const handleSubmit = (e) => {
                 <section>
                   {isEditing[i] ? (
                     <>
+                      <MyCoolCodeBlock
+                        code={editedAnswer[i] || gpt.answer}
+                        language="javascript"
+                        showLineNumbers={true}
+                        startingLineNumber={1}
+                      />
                       <input
                         value={editedAnswer[i] || gpt.answer}
                         onChange={(e) =>
@@ -179,7 +185,12 @@ const handleSubmit = (e) => {
                     </>
                   ) : (
                     <>
-                      <ReactMarkdown key={i}>{gpt.answer}</ReactMarkdown>
+                      <MyCoolCodeBlock
+                        code={gpt.answer}
+                        language="javascript"
+                        showLineNumbers={true}
+                        startingLineNumber={1}
+                      />
                       <button onClick={() => editAnswer(i)}>Edit</button>
                     </>
                   )}
