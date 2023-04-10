@@ -43,18 +43,18 @@ const App = () => {
 
 
   const generateImage = () => {
-    axios
-      .post("http://localhost:3080/generate-image", {})
-      .then((response) => {
-        console.log(response.data); // check response data
-        const imageUrl = response.data.data[0].url;
-        console.log(imageUrl); // check imageUrl
+   axios
+     .post(`${process.env.REACT_APP_API_URL}/generate-image`, {})
+     .then((response) => {
+       console.log(response.data); // check response data
+       const imageUrl = response.data.data[0].url;
+       console.log(imageUrl); // check imageUrl
 
-        setGeneratedImageUrl(imageUrl);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+       setGeneratedImageUrl(imageUrl);
+     })
+     .catch((error) => {
+       console.error(error);
+     });
   };
 
   // STATE
@@ -77,7 +77,9 @@ const App = () => {
 
     // Send an HTTP request to the backend API endpoint to update the answer
     axios
-      .put(`http://localhost:3080/gpt/${answerId}`, { answer: newContent })
+      .put(`${process.env.REACT_APP_API_URL}/gpt/${answerId}`, {
+        answer: newContent,
+      })
       .then((response) => {
         // Update the gptArray with the updated answer received from the backend
         const updatedGptArray = gptArray.map((gpt) =>
