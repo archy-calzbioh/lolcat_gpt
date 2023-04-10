@@ -41,20 +41,19 @@ const App = () => {
     setSelectedElementId(elementId);
   };
 
-
   const generateImage = () => {
-   axios
-     .post(`${process.env.REACT_APP_API_URL}/generate-image`, {})
-     .then((response) => {
-       console.log(response.data); // check response data
-       const imageUrl = response.data.data[0].url;
-       console.log(imageUrl); // check imageUrl
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/generate-image`, {})
+      .then((response) => {
+        console.log(response.data); // check response data
+        const imageUrl = response.data.data[0].url;
+        console.log(imageUrl); // check imageUrl
 
-       setGeneratedImageUrl(imageUrl);
-     })
-     .catch((error) => {
-       console.error(error);
-     });
+        setGeneratedImageUrl(imageUrl);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   // STATE
@@ -102,28 +101,34 @@ const App = () => {
     console.log(newQuestion);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post(
-      "http://localhost:3080/generate-image",
-      {}
-    );
-    const imageUrl = response.data.data[0].url;
-    setGeneratedImageUrl(imageUrl);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/generate-image`,
+        {}
+      );
+      const imageUrl = response.data.data[0].url;
+      setGeneratedImageUrl(imageUrl);
 
-    const gptResponse = await axios.post("http://localhost:3080/gpt", {
-      question: newQuestion,
-      imageUrl: imageUrl,
-    });
+      const gptResponse = await axios.post(
+        `${process.env.REACT_APP_API_URL}/gpt`,
+        {
+          question: newQuestion,
+          imageUrl: imageUrl,
+        }
+      );
 
-    setGptArray([...gptArray, gptResponse.data]);
-    setNewQuestion("");
-    setGeneratedImageUrl(null);
-  } catch (error) {
-    console.error(error);
-  }
-};
+      setGptArray([...gptArray, gptResponse.data]);
+      setNewQuestion("");
+      setGeneratedImageUrl(null);
+
+      // Fetch the data again after successfully submitting a new question
+      getData();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
 
   const handleDelete = (answerId) => {
@@ -156,93 +161,97 @@ const handleSubmit = async (e) => {
 
   useEffect(() => {
     getData();
-  }, [gptArray]);
+  }, []); // Empty dependency array ensures that getData is called only once on component mount
 
   return (
     <div className="App">
-        
       {/* SIDEBAR - Questions and Answers */}
       <div className="sidebar-container">
-  
-      <aside className="sidemenu">
-        <h1 className="title">Q&A</h1>
-        <hr />
-        <section>
-          {/* Render the elements in the sidebar */}
-          {gptArray.map((gpt) => (
-            <div key={gpt._id} onClick={() => handleElementClick(gpt._id)}>
-              <p className="question">{gpt.question}</p>
-            </div>
-          ))}
-        </section>
-        <hr />
-        <section>
-          {/* Mapping through Array to display Questions and Answers  */}
-          {gptArray.map((gpt, i) => {
-            return (
-              <>
-                <section>
-                  <p className="question" key={i}>
-                    {gpt.question}
-                  </p>
-                </section>
-                <section>
-                  {isEditing[i] ? (
-                    <>
-                      <MyCoolCodeBlock
-                        code={editedAnswer[i] || gpt.answer}
-                        language="javascript"
-                        showLineNumbers={true}
-                        startingLineNumber={1}
-                      />
-                      <input
-                        value={editedAnswer[i] || gpt.answer}
-                        onChange={(e) =>
-                          setEditedAnswer({
-                            ...editedAnswer,
-                            [i]: e.target.value,
-                          })
-                        }
-                      />
-                      <button onClick={() => saveEditedAnswer(i)}>Save</button>
-                    </>
-                  ) : (
-                    <>
-                      <MyCoolCodeBlock
-                        code={gpt.answer}
-                        language="javascript"
-                        showLineNumbers={true}
-                        startingLineNumber={1}
-                      />
-                      <button onClick={() => editAnswer(i)}>Edit</button>
-                    </>
-                  )}
-                </section>
-                <section>
-                  <button onClick={() => handleDelete(gpt._id)}>Delete</button>
-                </section>
-                <hr />
-              </>
-            );
-          })}
-        </section>
-      </aside>
-        </div>
+        <aside className="sidemenu">
+          <h1 className="title">Q&A</h1>
+          <hr />
+          <section>
+            {/* Render the elements in the sidebar */}
+            {gptArray.map((gpt) => (
+              <div key={gpt._id} onClick={() => handleElementClick(gpt._id)}>
+                <p className="question">{gpt.question}</p>
+              </div>
+            ))}
+          </section>
+          <hr />
+          <section>
+            {/* Mapping through Array to display Questions and Answers  */}
+            {gptArray.map((gpt, i) => {
+              return (
+                <>
+                  <section>
+                    <p className="question" key={i}>
+                      {gpt.question}
+                    </p>
+                  </section>
+                  <section>
+                    {isEditing[i] ? (
+                      <>
+                        <MyCoolCodeBlock
+                          code={editedAnswer[i] || gpt.answer}
+                          language="javascript"
+                          showLineNumbers={true}
+                          startingLineNumber={1}
+                        />
+                        <input
+                          value={editedAnswer[i] || gpt.answer}
+                          onChange={(e) =>
+                            setEditedAnswer({
+                              ...editedAnswer,
+                              [i]: e.target.value,
+                            })
+                          }
+                        />
+                        <button onClick={() => saveEditedAnswer(i)}>
+                          Save
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <MyCoolCodeBlock
+                          code={gpt.answer}
+                          language="javascript"
+                          showLineNumbers={true}
+                          startingLineNumber={1}
+                        />
+                        <button onClick={() => editAnswer(i)}>Edit</button>
+                      </>
+                    )}
+                  </section>
+                  <section>
+                    <button onClick={() => handleDelete(gpt._id)}>
+                      Delete
+                    </button>
+                  </section>
+                  <hr />
+                </>
+              );
+            })}
+          </section>
+        </aside>
+      </div>
       {/* BODY */}
       <section className="chatbox">
-    <div className="chatbox-container">
-      {/* Render the first answer in the chatbox area */}
-      {gptArray.length > 0 && (
-        <div className="chat-output-holder">
-          {gptArray[gptArray.length - 1].answer && (
-            <div className="code-block"> {/* Add this wrapper */}
-              <MyCoolCodeBlock
-                code={gptArray[gptArray.length - 1].answer}
-                language="javascript"
-                showLineNumbers={true}
-                startingLineNumber={1}
-              />
-            </div>
+        <div className="chatbox-container">
+          {/* Render the first answer in the chatbox area */}
+          {gptArray.length > 0 && (
+            <div className="chat-output-holder">
+              {gptArray[gptArray.length - 1].answer && (
+                <div className="code-block">
+                  {" "}
+                  {/* Add this wrapper */}
+                  <MyCoolCodeBlock
+                    code={gptArray[gptArray.length - 1].answer}
+                    language="javascript"
+                    showLineNumbers={true}
+                    startingLineNumber={1}
+                  />
+                </div>
               )}
               {generatedImageUrl && (
                 <img
@@ -270,7 +279,6 @@ const handleSubmit = async (e) => {
               <button type="submit" className="submit-button">
                 Submit
               </button>
-     
             </form>
           </div>
         </div>
