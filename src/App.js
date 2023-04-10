@@ -6,14 +6,7 @@ import { CopyBlock, dracula } from "react-code-blocks";
 
 
 
-// Trigger a heap snapshot at any point in your code
-heapdump.writeSnapshot((err, filename) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(`Heap dump written to ${filename}`);
-  }
-});
+
 
 
 function MyCoolCodeBlock({
