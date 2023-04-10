@@ -100,25 +100,29 @@ const App = () => {
     console.log(newQuestion);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios
-      .post("http://localhost:3080/gpt", {
-        question: newQuestion,
-        imageUrl: generatedImageUrl, // Add the generated image URL to the request body
-      })
-      .then((response) => {
-        // Update the gptArray with the new entry received from the backend
-        setGptArray([...gptArray, response.data]);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post(
+      "http://localhost:3080/generate-image",
+      {}
+    );
+    const imageUrl = response.data.data[0].url;
+    setGeneratedImageUrl(imageUrl);
 
-        // Clear the new question and generated image URL
-        setNewQuestion("");
-        setGeneratedImageUrl(null);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+    const gptResponse = await axios.post("http://localhost:3080/gpt", {
+      question: newQuestion,
+      imageUrl: imageUrl,
+    });
+
+    setGptArray([...gptArray, gptResponse.data]);
+    setNewQuestion("");
+    setGeneratedImageUrl(null);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   const handleDelete = (answerId) => {
     // Send a DELETE request to the backend with the ID of the entry to be deleted
@@ -264,13 +268,7 @@ const App = () => {
               <button type="submit" className="submit-button">
                 Submit
               </button>
-              <button
-                type="button"
-                onClick={generateImage}
-                className="generate-image-button"
-              >
-                Generate Image
-              </button>
+     
             </form>
           </div>
         </div>
