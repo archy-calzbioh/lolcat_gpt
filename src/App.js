@@ -27,8 +27,30 @@ function MyCoolCodeBlock({
   );
 }
 
+ 
+
 
 const App = () => {
+  // Create a new state to store the generated image URL
+  const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
+
+const generateImage = () => {
+  axios
+    .post("http://localhost:3080/generate-image", {})
+    .then((response) => {
+      console.log(response.data); // check response data
+      const imageUrl = response.data.data[0].url;
+      console.log(imageUrl); // check imageUrl
+
+      setGeneratedImageUrl(imageUrl);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
+
+
   // STATE
   const [newQuestion, setNewQuestion] = useState("");
   const [gptArray, setGptArray] = useState([]);
@@ -67,26 +89,31 @@ const App = () => {
   // HANDLERS
 
   //handleChange
-const handleChange = (e) => {
-  setNewQuestion(e.target.value);
-  console.log(newQuestion);
+  const handleChange = (e) => {
+    setNewQuestion(e.target.value);
+    console.log(newQuestion);
+  };
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  axios
+    .post("http://localhost:3080/gpt", {
+      question: newQuestion,
+      imageUrl: generatedImageUrl, // Add the generated image URL to the request body
+    })
+    .then((response) => {
+      // Update the gptArray with the new entry received from the backend
+      setGptArray([...gptArray, response.data]);
+
+      // Clear the new question and generated image URL
+      setNewQuestion("");
+      setGeneratedImageUrl(null);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 };
 
-
-  // handleSubmit
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(newQuestion);
-    axios
-      .post("http://localhost:3080/gpt", {
-        question: newQuestion,
-      })
-      .then((response) => {
-        axios.get("http://localhost:3080/gpt").then((response) => {
-          setGptArray(response.data);
-        });
-      });
-  };
 
   const handleDelete = (answerId) => {
     // Send a DELETE request to the backend with the ID of the entry to be deleted
@@ -116,9 +143,9 @@ const handleChange = (e) => {
   // USE EFFECT
   // Have GPT Array in the Dependency Array so when it is updated, callAPI() is called and page refreshes!!
 
-  useEffect(() => {
-    getData();
-  }, [gptArray]);
+    useEffect(() => {
+      getData();
+    }, [gptArray]);
 
   return (
     <div className="App">
@@ -179,6 +206,18 @@ const handleChange = (e) => {
                 startingLineNumber={1}
               />
             )}
+            {generatedImageUrl && (
+              <img
+                src={generatedImageUrl}
+                alt="Generated Image"
+                style={{
+                  width: "300px",
+                  height: "300px",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                }}
+              />
+            )}
           </div>
         )}
         <div className="chat-input-holder">
@@ -192,6 +231,13 @@ const handleChange = (e) => {
             ></textarea>
             <button type="submit" className="submit-button">
               Submit
+            </button>
+            <button
+              type="button"
+              onClick={generateImage}
+              className="generate-image-button"
+            >
+              Generate Image
             </button>
           </form>
         </div>
