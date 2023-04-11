@@ -160,16 +160,6 @@ const App = () => {
       <div className="sidebar-container">
         <aside className="sidemenu">
           <h1 className="title">Q&A</h1>
-          <hr />
-          <section>
-            {/* Render the elements in the sidebar */}
-            {gptArray.map((gpt) => (
-              <div key={gpt._id} onClick={() => handleElementClick(gpt._id)}>
-                <p className="question">{gpt.question}</p>
-              </div>
-            ))}
-          </section>
-          <hr />
           <section>
             {/* Mapping through Array to display Questions and Answers  */}
             {gptArray.map((gpt, i) => {
