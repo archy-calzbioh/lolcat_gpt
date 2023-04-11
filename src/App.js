@@ -150,9 +150,9 @@ const App = () => {
   // USE EFFECT
   // Have GPT Array in the Dependency Array so when it is updated, callAPI() is called and page refreshes!!
 
-  useEffect(() => {
-    getData();
-  }, []); // Empty dependency array ensures that getData is called only once on component mount
+useEffect(() => {
+  getData();
+}, [gptArray]);
 
   return (
     <div className="App">
