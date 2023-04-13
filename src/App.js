@@ -40,9 +40,14 @@ const App = () => {
   const [selectedElementId, setSelectedElementId] = useState(null);
 
   // Handler function for when an element in the sidebar is clicked
-  const handleElementClick = (elementId) => {
-    setSelectedElementId(elementId);
-  };
+const handleElementClick = (elementId) => {
+  const selectedElement = gptArray.find((gpt) => gpt._id === elementId);
+  setSelectedCodeBlock(selectedElement.answer);
+};
+
+
+  //add a new state to store the selected code block
+  const [selectedCodeBlock, setSelectedCodeBlock] = useState(null);
 
   // STATE
   const [newQuestion, setNewQuestion] = useState("");
@@ -170,6 +175,7 @@ useEffect(() => {
                       {gpt.question}
                     </p>
                   </section>
+
                   <section>
                     {isEditing[i] ? (
                       <>
@@ -199,10 +205,18 @@ useEffect(() => {
                           language="javascript"
                           showLineNumbers={true}
                           startingLineNumber={1}
+                          onClick={() => handleElementClick(gpt._id)}
                         />
+
                         <button onClick={() => editAnswer(i)}>Edit</button>
                       </>
                     )}
+                    {/* Add the "Select Code Block" button here, outside the editing condition */}
+                    <section>
+                      <button onClick={() => handleElementClick(gpt._id)}>
+                        Select Code Block
+                      </button>
+                    </section>
                   </section>
                   <section>
                     <button onClick={() => handleDelete(gpt._id)}>
@@ -220,34 +234,34 @@ useEffect(() => {
       <section className="chatbox">
         <div className="chatbox-container">
           {/* Render the first answer in the chatbox area */}
-          {gptArray.length > 0 && (
-            <div className="chat-output-holder">
-              {gptArray[gptArray.length - 1].answer && (
-                <div className="code-block">
-                  {" "}
-                  {/* Add this wrapper */}
-                  <MyCoolCodeBlock
-                    code={gptArray[gptArray.length - 1].answer}
-                    language="javascript"
-                    showLineNumbers={true}
-                    startingLineNumber={1}
-                  />
-                </div>
-              )}
-              {generatedImageUrl && (
-                <img
-                  src={generatedImageUrl}
-                  alt="Generated Image"
-                  style={{
-                    width: "300px",
-                    height: "300px",
-                    marginTop: "20px",
-                    marginBottom: "20px",
-                  }}
-                />
-              )}
-            </div>
+          {selectedCodeBlock ? (
+            <MyCoolCodeBlock
+              code={selectedCodeBlock}
+              language="javascript"
+              showLineNumbers={true}
+              startingLineNumber={1}
+            />
+          ) : gptArray.length > 0 ? (
+            <MyCoolCodeBlock
+              code={gptArray[gptArray.length - 1].answer}
+              language="javascript"
+              showLineNumbers={true}
+              startingLineNumber={1}
+            />
+          ) : null}
+          {generatedImageUrl && (
+            <img
+              src={generatedImageUrl}
+              alt="Generated Image"
+              style={{
+                width: "300px",
+                height: "300px",
+                marginTop: "20px",
+                marginBottom: "20px",
+              }}
+            />
           )}
+
           <div className="chat-input-holder">
             {/* Our Question Input Field --- All to be asked will go here..... */}
             <form onSubmit={handleSubmit}>
