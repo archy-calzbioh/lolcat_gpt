@@ -160,9 +160,9 @@ useEffect(() => {
 }, [gptArray]);
 
   return (
-    <div className="App">
+    <div className="App container">
       {/* SIDEBAR - Questions and Answers */}
-      <div className="sidebar-container">
+      <div className="sidebar-container sidebar">
         <aside className="sidemenu">
           <h1 className="title">Q&A</h1>
           <section>

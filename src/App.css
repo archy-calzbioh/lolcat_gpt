@@ -140,3 +140,30 @@ form {
 }
 
 
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar {
+  width: 25%; /* set sidebar width to 1/4 of the screen */
+}
+
+.chatbox {
+  width: 75%; /* set chatbox width to 3/4 of the screen */
+}
+
+/* media query for smaller screens */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* change flex direction to column on smaller screens */
+  }
+
+  .chatbox {
+    width: 100%; /* set chatbox width to 100% on smaller screens */
+  }
+  .sidebar {
+    display: none; /* hide sidebar on smaller screens */
+  }
+}
