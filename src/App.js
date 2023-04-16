@@ -233,7 +233,7 @@ useEffect(() => {
       {/* BODY */}
       <section className="chatbox">
         <div className="chatbox-container">
-          {/* Render the first answer in the chatbox area */}
+          {/* Render the selected code block or the last code block in the gptArray */}
           {selectedCodeBlock ? (
             <MyCoolCodeBlock
               code={selectedCodeBlock}
@@ -242,13 +242,48 @@ useEffect(() => {
               startingLineNumber={1}
             />
           ) : gptArray.length > 0 ? (
-            <MyCoolCodeBlock
-              code={gptArray[gptArray.length - 1].answer}
-              language="javascript"
-              showLineNumbers={true}
-              startingLineNumber={1}
-            />
+            isEditing[gptArray.length - 1] ? (
+              <>
+                <MyCoolCodeBlock
+                  code={
+                    editedAnswer[gptArray.length - 1] ||
+                    gptArray[gptArray.length - 1].answer
+                  }
+                  language="javascript"
+                  showLineNumbers={true}
+                  startingLineNumber={1}
+                />
+                <input
+                  value={
+                    editedAnswer[gptArray.length - 1] ||
+                    gptArray[gptArray.length - 1].answer
+                  }
+                  onChange={(e) =>
+                    setEditedAnswer({
+                      ...editedAnswer,
+                      [gptArray.length - 1]: e.target.value,
+                    })
+                  }
+                />
+                <button onClick={() => saveEditedAnswer(gptArray.length - 1)}>
+                  Save
+                </button>
+              </>
+            ) : (
+              <>
+                <MyCoolCodeBlock
+                  code={gptArray[gptArray.length - 1].answer}
+                  language="javascript"
+                  showLineNumbers={true}
+                  startingLineNumber={1}
+                />
+                <button onClick={() => editAnswer(gptArray.length - 1)}>
+                  Edit
+                </button>
+              </>
+            )
           ) : null}
+
           {generatedImageUrl && (
             <img
               src={generatedImageUrl}
