@@ -185,7 +185,8 @@ useEffect(() => {
                           showLineNumbers={true}
                           startingLineNumber={1}
                         />
-                        <input
+                        {/* Replace the input element with a textarea element */}
+                        <textarea
                           value={editedAnswer[i] || gpt.answer}
                           onChange={(e) =>
                             setEditedAnswer({
@@ -193,6 +194,8 @@ useEffect(() => {
                               [i]: e.target.value,
                             })
                           }
+                          rows="5" // Set the number of rows for the textarea
+                          className="code-edit-textarea" // Optional: Add a class for styling
                         />
                         <button onClick={() => saveEditedAnswer(i)}>
                           Save
@@ -207,10 +210,10 @@ useEffect(() => {
                           startingLineNumber={1}
                           onClick={() => handleElementClick(gpt._id)}
                         />
-
                         <button onClick={() => editAnswer(i)}>Edit</button>
                       </>
                     )}
+
                     {/* Add the "Select Code Block" button here, outside the editing condition */}
                     <section>
                       <button onClick={() => handleElementClick(gpt._id)}>
@@ -253,7 +256,8 @@ useEffect(() => {
                   showLineNumbers={true}
                   startingLineNumber={1}
                 />
-                <input
+                {/* Replace the input element with a textarea element */}
+                <textarea
                   value={
                     editedAnswer[gptArray.length - 1] ||
                     gptArray[gptArray.length - 1].answer
@@ -264,6 +268,8 @@ useEffect(() => {
                       [gptArray.length - 1]: e.target.value,
                     })
                   }
+                  rows="5" // Set the number of rows for the textarea
+                  className="code-edit-textarea" // Optional: Add a class for styling
                 />
                 <button onClick={() => saveEditedAnswer(gptArray.length - 1)}>
                   Save
