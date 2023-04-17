@@ -194,7 +194,7 @@ useEffect(() => {
                               [i]: e.target.value,
                             })
                           }
-                          rows="5" // Set the number of rows for the textarea
+                          rows="10" // Set the number of rows for the textarea
                           className="code-edit-textarea" // Optional: Add a class for styling
                         />
                         <button onClick={() => saveEditedAnswer(i)}>
@@ -268,7 +268,7 @@ useEffect(() => {
                       [gptArray.length - 1]: e.target.value,
                     })
                   }
-                  rows="5" // Set the number of rows for the textarea
+                  rows="10" // Set the number of rows for the textarea
                   className="code-edit-textarea" // Optional: Add a class for styling
                 />
                 <button onClick={() => saveEditedAnswer(gptArray.length - 1)}>
